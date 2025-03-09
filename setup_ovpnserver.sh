@@ -43,5 +43,5 @@ sudo iptables -A FORWARD -i tun0 -m state --state RELATED,ESTABLISHED -j ACCEPT
 sudo iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
 
 #ADDING MTU PARAMETER ON CLIENT FOR STABILITY 
-sed -i '3a mssfix 1400' ./client.ovpn
-sed -i '3a mssfix 1400' ./jumpbox.ovpn
+sed -i '3a mssfix 1400' /root/client.ovpn
+sed -i '3a mssfix 1400' /root/jumpbox.ovpn
