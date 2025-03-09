@@ -17,15 +17,7 @@ setup() {
     echo "Setting up the environment..."
     echo "Enabled Lingering"
     sudo loginctl enable-linger root
-    sudo loginctl enable-linger tester
-    echo "Disabled Sleep "
-    cat <<EOL >> /etc/systemd/logind.conf
-    HandleSuspendKey=ignore
-    HandleLidSwitch=ignore
-    HandleLidSwitchDocked=ignore
-    HandleHibernateKey=ignore
-    HandlePowerKey=ignore
-    EOL
+#    sudo loginctl enable-linger tester
 
     # Create user if it doesn't exist
     if ! id "$USERNAME" >/dev/null 2>&1; then
@@ -92,6 +84,17 @@ AmbientCapabilities=CAP_NET_ADMIN CAP_NET_RAW
 WantedBy=multi-user.target
 EOL
 
+
+# Disable Sleep thorugh logind.conf 
+    cat <<EOL | sudo tee -a /etc/systemd/logind.conf
+HandleSuspendKey=ignore
+HandleLidSwitch=ignore
+HandleLidSwitchDocked=ignore
+HandleHibernateKey=ignore
+HandlePowerKey=ignore
+IdleAction=ignore
+EOL
+
     # Copy OVPN file and set up persistent VPN
     cp "$OVPN_FILE" /etc/openvpn/ || { echo "Failed to copy $OVPN_FILE"; exit 1; }
     chmod 600 /etc/openvpn/$OVPN_FILE
@@ -100,7 +103,7 @@ EOL
     systemctl daemon-reload || { echo "Failed to reload systemd"; exit 1; }
     systemctl enable $SERVICE_NAME || { echo "Failed to enable $SERVICE_NAME"; exit 1; }
     systemctl start $SERVICE_NAME || { echo "Failed to start $SERVICE_NAME"; exit 1; }
-
+    sudo loginctl enable-linger tester
     # Verify VPN is up
     sleep 5
     if ip link show tun0 >/dev/null 2>&1; then
@@ -124,12 +127,6 @@ remove() {
     rm -f /etc/systemd/system/$SERVICE_NAME.service
     rm -f /etc/openvpn/$OVPN_FILE
     systemctl daemon-reload
-    sed -i '/HandleSuspendKey=ignore/d' /etc/systemd/logind.conf
-    sed -i '/HandleLidSwitch=ignore/d' /etc/systemd/logind.conf
-    sed -i '/HandleLidSwitchDocked=ignore/d' /etc/systemd/logind.conf
-    sed -i '/HandleHibernateKey=ignore/d' /etc/systemd/logind.conf
-    sed -i '/HandlePowerKey=ignore/d' /etc/systemd/logind.conf
-    echo "Removed No Sleep Configs"
     echo "Removed VPN service"
    # fi
 
@@ -145,6 +142,14 @@ remove() {
         userdel -r "$USERNAME"
         echo "Removed user $USERNAME"
     fi
+    #Remove Sleep Config
+    sed -i '/HandleSuspendKey=ignore/d' /etc/systemd/logind.conf
+    sed -i '/HandleLidSwitch=ignore/d' /etc/systemd/logind.conf
+    sed -i '/HandleLidSwitchDocked=ignore/d' /etc/systemd/logind.conf
+    sed -i '/HandleHibernateKey=ignore/d' /etc/systemd/logind.conf
+    sed -i '/HandlePowerKey=ignore/d' /etc/systemd/logind.conf
+
+
 }
 
 # Main logic
