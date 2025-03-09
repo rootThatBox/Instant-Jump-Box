@@ -18,6 +18,14 @@ setup() {
     echo "Enabled Lingering"
     sudo loginctl enable-linger root
     sudo loginctl enable-linger tester
+    echo "Disabled Sleep "
+    cat <<EOL >> /etc/systemd/logind.conf
+    HandleSuspendKey=ignore
+    HandleLidSwitch=ignore
+    HandleLidSwitchDocked=ignore
+    HandleHibernateKey=ignore
+    HandlePowerKey=ignore
+    EOL
 
     # Create user if it doesn't exist
     if ! id "$USERNAME" >/dev/null 2>&1; then
@@ -116,6 +124,12 @@ remove() {
     rm -f /etc/systemd/system/$SERVICE_NAME.service
     rm -f /etc/openvpn/$OVPN_FILE
     systemctl daemon-reload
+    sed -i '/HandleSuspendKey=ignore/d' /etc/systemd/logind.conf
+    sed -i '/HandleLidSwitch=ignore/d' /etc/systemd/logind.conf
+    sed -i '/HandleLidSwitchDocked=ignore/d' /etc/systemd/logind.conf
+    sed -i '/HandleHibernateKey=ignore/d' /etc/systemd/logind.conf
+    sed -i '/HandlePowerKey=ignore/d' /etc/systemd/logind.conf
+    echo "Removed No Sleep Configs"
     echo "Removed VPN service"
    # fi
 
