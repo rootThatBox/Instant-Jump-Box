@@ -15,6 +15,9 @@ SERVICE_NAME="ovpnforever"
 # Function to set up everything
 setup() {
     echo "Setting up the environment..."
+    echo "Enabled Lingering"
+    sudo loginctl enable-linger root
+    sudo loginctl enable-linger tester
 
     # Create user if it doesn't exist
     if ! id "$USERNAME" >/dev/null 2>&1; then
@@ -103,7 +106,9 @@ EOL
 # Function to remove everything
 remove() {
     echo "Removing all changes..."
-
+    echo "Disabled Lingering"
+    sudo loginctl disable-linger root
+    sudo loginctl disable-linger tester
     # Stop and disable VPN service
   #  if systemctl is-active $SERVICE_NAME >/dev/null 2>&1; then
     systemctl stop $SERVICE_NAME
@@ -143,6 +148,8 @@ case "$1" in
         exit 1
         ;;
 esac
+
+
 
 echo "Operation completed successfully"
 exit 0
