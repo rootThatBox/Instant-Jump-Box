@@ -85,7 +85,7 @@ WantedBy=multi-user.target
 EOL
 
 
-# Disable Sleep thorugh logind.conf 
+# Disable Sleep thorugh logind.conf and systemctl
     cat <<EOL | sudo tee -a /etc/systemd/logind.conf
 HandleSuspendKey=ignore
 HandleLidSwitch=ignore
@@ -94,7 +94,7 @@ HandleHibernateKey=ignore
 HandlePowerKey=ignore
 IdleAction=ignore
 EOL
-
+    sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
     # Copy OVPN file and set up persistent VPN
     cp "$OVPN_FILE" /etc/openvpn/ || { echo "Failed to copy $OVPN_FILE"; exit 1; }
     chmod 600 /etc/openvpn/$OVPN_FILE
@@ -143,11 +143,13 @@ remove() {
         echo "Removed user $USERNAME"
     fi
     #Remove Sleep Config
+    sudo systemctl unmask sleep.target suspend.target hibernate.target hybrid-sleep.target
     sed -i '/HandleSuspendKey=ignore/d' /etc/systemd/logind.conf
     sed -i '/HandleLidSwitch=ignore/d' /etc/systemd/logind.conf
     sed -i '/HandleLidSwitchDocked=ignore/d' /etc/systemd/logind.conf
     sed -i '/HandleHibernateKey=ignore/d' /etc/systemd/logind.conf
     sed -i '/HandlePowerKey=ignore/d' /etc/systemd/logind.conf
+    sudo loginctl enable-linger tester
 
 
 }
