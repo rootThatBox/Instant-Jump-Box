@@ -45,3 +45,6 @@ sudo iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
 #ADDING MTU PARAMETER ON CLIENT FOR STABILITY 
 sed -i '3a mssfix 1400' /root/client.ovpn
 sed -i '3a mssfix 1400' /root/jumpbox.ovpn
+sed -i '9a ping 10' /root/jumpbox.ovpn
+sed -i '10a ping-restart 60' /root/jumpbox.ovpn 
+
