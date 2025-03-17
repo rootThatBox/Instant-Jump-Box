@@ -1,4 +1,11 @@
 wget https://raw.githubusercontent.com/hwdsl2/openvpn-install/master/openvpn-install.sh
+if [[ "$1" == "--remove" ]]; then
+    sudo bash ovpn-install.sh --uninstall 
+    echo "THE OVPN SERVER IS REMOVED"
+    exit 0
+fi
+
+
 bash openvpn-install.sh --auto
 bash openvpn-install.sh --addclient jumpbox
 ###Remove Firewall Rules set by auto install
