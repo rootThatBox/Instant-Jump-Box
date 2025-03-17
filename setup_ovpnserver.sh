@@ -1,6 +1,6 @@
 wget https://raw.githubusercontent.com/hwdsl2/openvpn-install/master/openvpn-install.sh
 if [[ "$1" == "--remove" ]]; then
-    sudo bash openvpn-install.sh --uninstall 
+    sudo bash openvpn-install.sh --uninstall  -y 
     echo "THE OVPN SERVER IS REMOVED"
     exit 0
 fi
