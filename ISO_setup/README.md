@@ -63,4 +63,4 @@ Then build the ISO with:
 
 Wait for the build process to complete.  
 The final ISO will be generated after successful completion.
-
+Note: Password login over ssh is still enabled for debug purposes
