@@ -44,7 +44,7 @@ Reference: [Kali Linux Documentation — Live Build a Custom Kali ISO](https://w
   Append this line at the end of the file:
 
   ```bash
-  sudo bash /etc/jumpbox_iso.sh
+  sudo bash /usr/jumpbox_iso.sh
   ```
 
 ## 4. Build the Custom ISO
